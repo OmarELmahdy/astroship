@@ -1,0 +1,98 @@
+---
+import type { Mixer } from '@/types/Mixer';
+import { Image } from 'astro:assets';
+
+interface Props {
+  mixers: Mixer[];
+}
+
+const { mixers } = Astro.props;
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  {mixers.map((mixer) => (
+    <div 
+      class="product-card group bg-white rounded-xl overflow-hidden shadow-lg border border-[#D6D6D6] hover:shadow-xl transition-all duration-300"
+      data-price={mixer.price}
+      data-name={mixer.name}
+      data-style={mixer.style}
+      data-mount={mixer.mount}
+    >
+      {/* Image Gallery */}
+      <div class="relative aspect-video overflow-hidden bg-[#F8F9FA]">
+        <div class="image-gallery relative w-full h-full">
+          {mixer.images.map((image, index) => (
+            <Image
+              src={image.src}
+              alt={image.alt}
+              width={600}
+              height={400}
+              class={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-300 ${
+                index === 0 ? 'opacity-100' : 'opacity-0'
+              }`}
+              data-index={index}
+            />
+          ))}
+          
+          {/* Gallery Navigation */}
+          {mixer.images.length > 1 && (
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+              {mixer.images.map((_, index) => (
+                <button
+                  class={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                    index === 0 ? 'bg-[#2F4BA0]' : 'bg-[#B0BEC5]'
+                  }`}
+                  data-dot={index}
+                  aria-label={`View image ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Product Info */}
+      <div class="p-6">
+        <h3 class="text-xl font-semibold text-[#243871] mb-2">
+          {mixer.name}
+        </h3>
+        <p class="text-[#4B5563] mb-4">
+          {mixer.description}
+        </p>
+        
+        {/* Features */}
+        <div class="mb-4">
+          {mixer.features.map((feature) => (
+            <span class="inline-block bg-[#2F4BA0] text-white text-sm px-3 py-1 rounded-full mr-2 mb-2">
+              {feature}
+            </span>
+          ))}
+          <span class="inline-block bg-[#007A4D] text-white text-sm px-3 py-1 rounded-full mr-2 mb-2">
+            {mixer.mount}
+          </span>
+        </div>
+
+        {/* Price and Actions */}
+        <div class="flex justify-between items-center">
+          <span class="text-2xl font-bold text-[#243871]">
+            ${mixer.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          </span>
+          <div class="flex gap-2">
+            <button 
+              class="wishlist-btn bg-[#F8F9FA] text-[#243871] px-3 py-2 rounded-lg hover:bg-[#D6D6D6] transition-colors duration-300"
+              data-mixer-id={mixer.id}
+              aria-label="Add to wishlist"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <button class="bg-[#2F4BA0] text-white px-6 py-2 rounded-lg hover:bg-[#243871] transition-colors duration-300">
+              Learn More
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>

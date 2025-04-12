@@ -1,0 +1,626 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Container from "@/components/container.astro";
+import { Image } from "astro:assets";
+
+// Add sorting state
+
+// const sortOptions = {
+//   DEFAULT: "default",
+//   PRICE_LOW: "price-low",
+//   PRICE_HIGH: "price-high",
+//   NAME_ASC: "name-asc",
+// };
+
+const styleOptions = {
+  ALL: "all",
+  PULL_DOWN: "Pull-Down",
+  TRADITIONAL: "Traditional",
+  MODERN: "Modern",
+};
+
+const mountOptions = {
+  ALL: "all",
+  WALL: "Wall Mount",
+  DECK: "Deck Mount"
+};
+
+const mixers = [
+  {
+    id: 1,
+    name: "Professional Series Mixer",
+    description: "Premium stainless steel construction with ceramic disc technology",
+    price: 299.99,
+    style: "Traditional",
+    mount: "Deck Mount",
+    features: ["360° Swivel", "Ceramic Disc Cartridge", "Spot-resistant Finish"],
+    images: [
+      {
+        src: "/mixers/pro-series.jpg",
+        alt: "Front view of Professional Series Mixer"
+      },
+      {
+        src: "/mixers/pro-series-side.jpg",
+        alt: "Side view of Professional Series Mixer"
+      },
+      {
+        src: "/mixers/pro-series-detail.jpg",
+        alt: "Detail view of Professional Series Mixer"
+      }
+    ]
+  },
+  {
+    id: 2,
+    name: "Pull-Down Spray Mixer",
+    description: "Modern design with flexible spray head and multiple spray modes",
+    price: 249.99,
+    style: "Pull-Down",
+    mount: "Deck Mount",
+    features: ["Dual Spray Mode", "Extended Reach", "Easy-Clean Nozzle"],
+    images: [
+      {
+        src: "/bathroom/VK19062.jpg",
+        alt: "Front view of Pull-Down Spray Mixer"
+      },
+      {
+        src: "/bathroom/VK19062-2.jpg",
+        alt: "Side view of Pull-Down Spray Mixer"
+      }
+    ]
+  },
+  {
+    id: 3,
+    name: "Smart Touch Mixer",
+    description: "Touch-activated operation with temperature memory",
+    price: 399.99,
+    style: "Modern",
+    mount: "Wall Mount",
+    features: ["Touch Control", "Temperature Memory", "LED Indicator"],
+    image: "/mixers/smart-touch.jpg"
+  },
+];
+
+const localStorageKey = 'bathroom-mixers-wishlist';
+
+// Client-side sorting and filtering
+---
+
+<Layout title="Bathroom Mixers | Value">
+  <Container>
+    <div class="py-16">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-[#243871] mb-4">
+          Premium Bathroom Mixers
+        </h1>
+        <p class="text-[#4B5563] max-w-2xl mx-auto">
+          Discover our collection of high-quality bathroom mixers, combining elegant design with superior functionality for your modern bathroom.
+        </p>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="bg-[#F8F9FA] p-4 rounded-lg mb-8 border border-[#D6D6D6]">
+        <div class="flex flex-wrap gap-4 justify-between items-center">
+          <div class="flex gap-4">
+            <!-- <select 
+              id="sortSelect"
+              class="px-4 py-2 rounded border border-[#B0BEC5] text-[#4B5563]">
+              <option value={sortOptions.DEFAULT}>Sort by</option>
+              <option value={sortOptions.PRICE_LOW}>Price: Low to High</option>
+              <option value={sortOptions.PRICE_HIGH}>Price: High to Low</option>
+              <option value={sortOptions.NAME_ASC}>Name: A to Z</option>
+            </select> -->
+            <select 
+              id="styleSelect"
+              class="px-4 py-2 rounded border border-[#B0BEC5] text-[#4B5563]">
+              <option value={styleOptions.ALL}>All Styles</option>
+              <option value={styleOptions.PULL_DOWN}>Pull-Down</option>
+              <option value={styleOptions.TRADITIONAL}>Traditional</option>
+              <option value={styleOptions.MODERN}>Modern</option>
+            </select>
+            <select 
+              id="mountSelect"
+              class="px-4 py-2 rounded border border-[#B0BEC5] text-[#4B5563]">
+              <option value={mountOptions.ALL}>All Mounts</option>
+              <option value={mountOptions.WALL}>Wall Mount</option>
+              <option value={mountOptions.DECK}>Deck Mount</option>
+            </select>
+          </div>
+          <div class="text-[#6D6D6D]" id="productCount">
+            Showing {mixers.length} products
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Grid -->
+      <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {mixers.map((mixer) => (
+          <div class="product-card group bg-white rounded-xl overflow-hidden shadow-lg border border-[#D6D6D6] hover:shadow-xl transition-all duration-300"
+               data-price={mixer.price}
+               data-name={mixer.name}
+               data-style={mixer.style}
+               data-mount={mixer.mount}>
+            <div class="relative aspect-video overflow-hidden bg-[#F8F9FA]">
+              <div class="image-gallery relative w-full h-full">
+                {(mixer.images ?? []).map((image, index) => (
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    width={600}
+                    height={400}
+                    class={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-300 ${index === 0 ? 'opacity-100' : 'opacity-0'}`}
+                    data-index={index}
+                  />
+                ))}
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                  {(mixer.images ?? []).map((_, index) => (
+                      <button
+                        class={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                          index === 0 ? 'bg-[#2F4BA0]' : 'bg-[#B0BEC5]'
+                        }`}
+                        data-dot={index}
+                        aria-label={`View image ${index + 1}`}
+                      />
+                    ))}
+                </div>
+                {(mixer.images ?? []).length > 1 && (
+                  <>
+                    <button
+                      class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full hover:bg-white transition-colors duration-300"
+                      data-direction="prev"
+                      aria-label="Previous image">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full hover:bg-white transition-colors duration-300"
+                      data-direction="next"
+                      aria-label="Next image">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-semibold text-[#243871] mb-2">
+                {mixer.name}
+              </h3>
+              <p class="text-[#4B5563] mb-4">
+                {mixer.description}
+              </p>
+              <div class="mb-4">
+                {mixer.features.map((feature) => (
+                  <span class="inline-block bg-[#2F4BA0] text-white text-sm px-3 py-1 rounded-full mr-2 mb-2">
+                    {feature}
+                  </span>
+                ))}
+                <span class="inline-block bg-[#007A4D] text-white text-sm px-3 py-1 rounded-full mr-2 mb-2">
+                  {mixer.mount}
+                </span>
+              </div>
+              <div class="flex justify-between items-center">
+                {/* <span class="text-2xl font-bold text-[#243871]">
+                  ${mixer.price}
+                </span> */}
+                <div class="flex gap-2">
+                  <button 
+                    class="wishlist-btn bg-[#F8F9FA] text-[#243871] px-3 py-2 rounded-lg hover:bg-[#D6D6D6] transition-colors duration-300"
+                    data-mixer-id={mixer.id}
+                    aria-label="Add to wishlist">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </button>
+                  {/* <button class="bg-[#2F4BA0] text-white px-6 py-2 rounded-lg hover:bg-[#243871] transition-colors duration-300">
+                    Learn More
+                  </button> */}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Contact Section -->
+      <div class="mt-16 bg-[#2F4BA0] text-white rounded-xl p-8 text-center">
+        <h2 class="text-2xl font-bold mb-4">
+          Need Help Choosing the Perfect Mixer?
+        </h2>
+        <p class="mb-6 max-w-2xl mx-auto">
+          Our experts are here to help you find the perfect bathroom mixer for your needs. Contact us for personalized assistance.
+        </p>
+        <button class="bg-white text-[#243871] px-8 py-3 rounded-lg font-semibold hover:bg-[#F8F9FA] transition-colors duration-300">
+          Contact Us
+        </button>
+      </div>
+    </div>
+  </Container>
+
+  <!-- Image Modal -->
+  <div id="imageModal" class="fixed inset-0 bg-black/90 z-50 hidden">
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="relative max-w-6xl w-full">
+        <div class="relative aspect-[3/2] w-full">
+          <img
+            id="modalImage"
+            src=""
+            alt=""
+            class="absolute inset-0 w-full h-full object-contain"
+          />
+        </div>
+        <button
+          id="closeModal"
+          class="absolute top-4 right-4 bg-white/80 p-2 rounded-full hover:bg-white transition-colors duration-300"
+          aria-label="Close modal">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="absolute left-4 right-4 bottom-4 flex justify-center gap-2">
+          <div id="modalThumbnails" class="flex gap-2 bg-white/80 p-2 rounded-lg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  function sortProducts(sortBy) {
+    const productGrid = document.getElementById('productGrid');
+    const products = Array.from(document.querySelectorAll('.product-card'));
+
+    products.sort((a, b) => {
+      const priceA = parseFloat((a as HTMLElement).dataset.price!);
+      const priceB = parseFloat((b as HTMLElement).dataset.price!);
+      const nameA = (a as HTMLElement).dataset.name!;
+      const nameB = (b as HTMLElement).dataset.name!;
+
+      switch (sortBy) {
+        case 'price-low':
+          return priceA - priceB;
+        case 'price-high':
+          return priceB - priceA;
+        case 'name-asc':
+          return nameA.localeCompare(nameB);
+        default:
+          return 0;
+      }
+    });
+
+    if (productGrid) {
+      productGrid.innerHTML = '';
+      products.forEach(product => productGrid.appendChild(product));
+    }
+  }
+
+  function filterByStyle(style) {
+    const products = document.querySelectorAll('.product-card');
+    let visibleCount = 0;
+
+    products.forEach(product => {
+      if (style === 'all' || (product as HTMLElement).dataset.style === style) {
+        (product as HTMLElement).style.display = '';
+        visibleCount++;
+      } else {
+        (product as HTMLElement).style.display = 'none';
+      }
+    });
+
+    const productCountElement = document.getElementById('productCount');
+    if (productCountElement) {
+      productCountElement.textContent = `Showing ${visibleCount} products`;
+    }
+  }
+
+  function filterByMount(mount) {
+    const products = document.querySelectorAll('.product-card');
+    let visibleCount = 0;
+
+    products.forEach(product => {
+      const element = product as HTMLElement;
+      const currentStyle = element.dataset.style;
+      const currentMount = element.dataset.mount;
+      const styleSelect = document.getElementById('styleSelect') as HTMLSelectElement;
+      const selectedStyle = styleSelect.value;
+
+      const styleMatch = selectedStyle === 'all' || currentStyle === selectedStyle;
+      const mountMatch = mount === 'all' || currentMount === mount;
+
+      if (styleMatch && mountMatch) {
+        element.style.display = '';
+        visibleCount++;
+      } else {
+        element.style.display = 'none';
+      }
+    });
+
+    const productCountElement = document.getElementById('productCount');
+    if (productCountElement) {
+      productCountElement.textContent = `Showing ${visibleCount} products`;
+    }
+  }
+
+  // Add this at the top of the script section
+  function initWishlist() {
+    const wishlistBtns = document.querySelectorAll('.wishlist-btn');
+    const localStorageKey = 'bathroom-mixers-wishlist';
+    
+    // Load existing wishlist
+    const wishlist = new Set(JSON.parse(localStorage.getItem(localStorageKey) || '[]'));
+    
+    // Update initial button states
+    wishlistBtns.forEach(btn => {
+      const mixerId = (btn as HTMLElement).dataset.mixerId;
+      if (wishlist.has(mixerId)) {
+        btn.classList.add('active');
+        (btn.querySelector('svg') as SVGElement).style.fill = '#2F4BA0';
+      }
+    });
+
+    // Add click handlers
+    wishlistBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const mixerId = (btn as HTMLElement).dataset.mixerId;
+        const svg = btn.querySelector('svg');
+        
+        if (wishlist.has(mixerId)) {
+          wishlist.delete(mixerId);
+          btn.classList.remove('active');
+          if (svg) svg.style.fill = 'none';
+        } else {
+          wishlist.add(mixerId);
+          btn.classList.add('active');
+          if (svg) svg.style.fill = '#2F4BA0';
+        }
+        
+        localStorage.setItem(localStorageKey, JSON.stringify([...wishlist]));
+        
+        // Optional: Show feedback
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-4 right-4 bg-[#243871] text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300';
+        toast.textContent = wishlist.has(mixerId) ? 'Added to wishlist' : 'Removed from wishlist';
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          setTimeout(() => toast.remove(), 300);
+        }, 2000);
+      });
+    });
+  }
+
+  function initImageGalleries() {
+    document.querySelectorAll('.image-gallery').forEach(gallery => {
+      const images = gallery.querySelectorAll('img');
+      const dots = gallery.querySelectorAll('[data-dot]');
+      const prevBtn = gallery.querySelector('[data-direction="prev"]');
+      const nextBtn = gallery.querySelector('[data-direction="next"]');
+      let currentIndex = 0;
+  
+      function showImage(index) {
+        images.forEach((img, i) => {
+          img.style.opacity = i === index ? '1' : '0';
+        });
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('bg-[#2F4BA0]', i === index);
+          dot.classList.toggle('bg-[#B0BEC5]', i !== index);
+        });
+      }
+  
+      function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+      }
+  
+      function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage(currentIndex);
+      }
+  
+      // Event listeners
+      prevBtn?.addEventListener('click', prevImage);
+      nextBtn?.addEventListener('click', nextImage);
+      
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          currentIndex = index;
+          showImage(currentIndex);
+        });
+      });
+  
+      // Optional: Auto-advance gallery
+      let interval;
+      
+      gallery.addEventListener('mouseenter', () => {
+        clearInterval(interval);
+      });
+  
+      gallery.addEventListener('mouseleave', () => {
+        interval = setInterval(nextImage, 5000);
+      });
+  
+      // Start auto-advance
+      interval = setInterval(nextImage, 5000);
+    });
+  }
+  
+  function initImageModal() {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const closeBtn = document.getElementById('closeModal');
+    const thumbnailsContainer = document.getElementById('modalThumbnails');
+    let currentGallery: HTMLImageElement[] = [];
+    
+    function openModal(clickedImg: HTMLImageElement, gallery: HTMLImageElement[]) {
+      if (!modal || !modalImg || !thumbnailsContainer) return;
+      
+      currentGallery = gallery;
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      
+      updateModalImage(clickedImg);
+      
+      // Create thumbnails
+      thumbnailsContainer.innerHTML = '';
+      gallery.forEach((img, index) => {
+        const thumb = document.createElement('button');
+        thumb.className = `w-16 h-16 rounded overflow-hidden ${
+          img.src === modalImg.src ? 'ring-2 ring-[#2F4BA0]' : ''
+        }`;
+        
+        const thumbImg = document.createElement('img');
+        thumbImg.src = img.src;
+        thumbImg.alt = img.alt;
+        thumbImg.className = 'w-full h-full object-cover';
+        
+        thumb.appendChild(thumbImg);
+        thumb.addEventListener('click', () => updateModalImage(img));
+        thumbnailsContainer.appendChild(thumb);
+      });
+    }
+    
+    function updateModalImage(img: HTMLImageElement) {
+      if (!modalImg || !thumbnailsContainer) return;
+      
+      modalImg.src = img.src;
+      modalImg.alt = img.alt;
+      
+      // Update thumbnail selection
+      thumbnailsContainer.querySelectorAll('button').forEach(thumb => {
+        thumb.classList.toggle('ring-2', 
+          thumb.querySelector('img')?.src === img.src
+        );
+        thumb.classList.toggle('ring-[#2F4BA0]',
+          thumb.querySelector('img')?.src === img.src
+        );
+      });
+    }
+    
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    
+    // Add click handlers to all gallery images
+    document.querySelectorAll('.image-gallery').forEach(gallery => {
+      const images = Array.from(gallery.querySelectorAll('img'));
+      images.forEach(img => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => openModal(img, images));
+      });
+    });
+    
+    // Close modal when clicking close button or outside
+    closeBtn?.addEventListener('click', closeModal);
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (modal?.classList.contains('hidden')) return;
+      
+      switch(e.key) {
+        case 'Escape':
+          closeModal();
+          break;
+        case 'ArrowLeft':
+          navigateModal(-1);
+          break;
+        case 'ArrowRight':
+          navigateModal(1);
+          break;
+      }
+    });
+    
+    function navigateModal(direction: number) {
+      if (!modalImg) return;
+      
+      const currentIndex = currentGallery.findIndex(img => img.src === modalImg.src);
+      const newIndex = (currentIndex + direction + currentGallery.length) % currentGallery.length;
+      updateModalImage(currentGallery[newIndex]);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initWishlist();
+    initImageGalleries();
+    initImageModal();
+  });
+
+  // Event Listeners
+  const sortSelect = document.getElementById('sortSelect');
+  const styleSelect = document.getElementById('styleSelect');
+  const mountSelect = document.getElementById('mountSelect');
+
+  if (sortSelect) {
+    sortSelect.addEventListener('change', (e) => {
+      sortProducts((e.target as HTMLSelectElement).value);
+    });
+  }
+
+  if (styleSelect) {
+    styleSelect.addEventListener('change', (e) => {
+      const mountSelect = document.getElementById('mountSelect') as HTMLSelectElement;
+      filterByStyle((e.target as HTMLSelectElement).value);
+      filterByMount(mountSelect.value);
+    });
+  }
+
+  if (mountSelect) {
+    mountSelect.addEventListener('change', (e) => {
+      filterByMount((e.target as HTMLSelectElement).value);
+    });
+  }
+</script>
+
+<style>
+  .wishlist-btn.active {
+    background-color: #F8F9FA;
+  }
+  
+  .wishlist-btn svg {
+    transition: fill 0.3s ease;
+  }
+
+  .image-gallery img {
+    transition: opacity 0.3s ease;
+  }
+  
+  .image-gallery button {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .image-gallery:hover button {
+    opacity: 1;
+  }
+  
+  #imageModal {
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  #modalImage {
+    animation: zoomIn 0.3s ease;
+  }
+  
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+</style>

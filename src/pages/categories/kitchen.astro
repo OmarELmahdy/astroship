@@ -1,0 +1,47 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Container from "@/components/container.astro";
+import FilterBar from "@/components/kitchen/FilterBar.astro";
+import ProductGrid from "@/components/kitchen/ProductGrid.astro";
+import ImageModal from "@/components/kitchen/ImageModal.astro";
+import ContactSection from "@/components/kitchen/ContactSection.astro";
+import { mixers } from "@/data/mixers";
+---
+
+<Layout title="Kitchen Mixers | Value">
+  <Container>
+    <div class="py-16">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-[#243871] mb-4">
+          Premium Kitchen Mixers
+        </h1>
+        <p class="text-[#4B5563] max-w-2xl mx-auto">
+          Discover our collection of high-quality kitchen mixers, combining elegant design with superior functionality for your modern kitchen.
+        </p>
+      </div>
+
+      <FilterBar count={mixers.length} />
+      <ProductGrid mixers={mixers} />
+      <ContactSection />
+    </div>
+  </Container>
+  
+  <ImageModal />
+</Layout>
+
+<script>
+  import { initImageModal } from '@/scripts/kitchen/modal';
+  import '@/scripts/kitchen/filtering';
+  import '@/scripts/kitchen/gallery';
+  import '@/scripts/kitchen/wishlist';
+
+  // Initialize modal when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    initImageModal();
+  });
+</script>
+
+<style is:global>
+  @import "@/styles/kitchen/components.css";
+  @import "@/styles/kitchen/modal.css";
+</style>

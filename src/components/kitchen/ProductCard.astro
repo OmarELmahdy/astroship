@@ -1,0 +1,33 @@
+---
+import type { Mixer } from '@/types/Mixer';
+import { Image } from 'astro:assets';
+
+interface Props {
+  mixer: Mixer;
+}
+
+const { mixer } = Astro.props;
+---
+
+<div class="product-card group bg-white rounded-xl overflow-hidden shadow-lg border border-[#D6D6D6] hover:shadow-xl transition-all duration-300"
+     data-price={mixer.price}
+     data-name={mixer.name}
+     data-style={mixer.style}
+     data-mount={mixer.mount}>
+  <div class="relative aspect-video overflow-hidden bg-[#F8F9FA]">
+    <div class="image-gallery relative w-full h-full">
+      {mixer.images.map((image, index) => (
+        <Image
+          src={image.src}
+          alt={image.alt}
+          width={600}
+          height={400}
+          class={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-300 ${index === 0 ? 'opacity-100' : 'opacity-0'}`}
+          data-index={index}
+        />
+      ))}
+      <!-- ...rest of gallery controls... -->
+    </div>
+  </div>
+  <!-- ...rest of product card content... -->
+</div>

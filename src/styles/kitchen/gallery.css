@@ -1,0 +1,12 @@
+.image-gallery img {
+  transition: opacity 0.3s ease;
+}
+
+.image-gallery button {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.image-gallery:hover button {
+  opacity: 1;
+}

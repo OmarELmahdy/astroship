@@ -1,0 +1,28 @@
+---
+import { styleOptions, mountOptions } from '@/types/Mixer';
+---
+
+<div class="bg-[#F8F9FA] p-4 rounded-lg mb-8 border border-[#D6D6D6]">
+  <div class="flex flex-wrap gap-4 justify-between items-center">
+    <div class="flex gap-4">
+      <select 
+        id="styleSelect"
+        class="px-4 py-2 rounded border border-[#B0BEC5] text-[#4B5563]">
+        <option value={styleOptions.ALL}>All Styles</option>
+        <option value={styleOptions.PULL_DOWN}>Pull-Down</option>
+        <option value={styleOptions.TRADITIONAL}>Traditional</option>
+        <option value={styleOptions.MODERN}>Modern</option>
+      </select>
+      <select 
+        id="mountSelect"
+        class="px-4 py-2 rounded border border-[#B0BEC5] text-[#4B5563]">
+        <option value={mountOptions.ALL}>All Mounts</option>
+        <option value={mountOptions.WALL}>Wall Mount</option>
+        <option value={mountOptions.DECK}>Deck Mount</option>
+      </select>
+    </div>
+    <div class="text-[#6D6D6D]" id="productCount">
+      Showing {Astro.props.count} products
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+/* Product Grid Styles */
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Image Gallery Styles */
+.image-gallery img {
+  transition: opacity 0.3s ease;
+}
+
+.image-gallery button {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.image-gallery:hover button {
+  opacity: 1;
+}
+
+/* Modal Styles */
+#imageModal {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Wishlist Button Styles */
+.wishlist-btn.active svg {
+  fill: #2F4BA0;
+}
+
+/* Feature Tags */
+.feature-tag {
+  background-color: #2F4BA0;
+  color: white;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.mount-tag {
+  background-color: #007A4D;
+}

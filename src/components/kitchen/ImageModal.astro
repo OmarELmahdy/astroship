@@ -1,0 +1,45 @@
+---
+---
+
+<div id="imageModal" class="modal hidden fixed inset-0 z-50 overflow-auto bg-black bg-opacity-75 flex items-center justify-center">
+  <div class="modal-content relative max-w-4xl mx-auto">
+    <!-- Close button -->
+    <button 
+      id="closeModal" 
+      class="absolute top-4 right-4 text-white hover:text-gray-300 z-50"
+      aria-label="Close modal">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Navigation buttons -->
+    <button 
+      id="prevImage" 
+      class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300"
+      aria-label="Previous image">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    
+    <button 
+      id="nextImage" 
+      class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300"
+      aria-label="Next image">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
+    <!-- Image container -->
+    <div class="relative">
+      <img 
+        id="modalImage" 
+        src="" 
+        alt="Product image" 
+        class="max-w-full h-auto max-h-[80vh] object-contain"
+      />
+    </div>
+  </div>
+</div>
